@@ -1,31 +1,91 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-TW">
   <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>My Github Root for Website Presentation</title>
-    <link rel="stylesheet" href="./style.css">
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge"/>
+    <title>H game 整理列表</title>
+    <link rel="canonical" href="https://www.letswrite.tw/google-excel-db/"/>
+    <meta property="og:url" content="https://letswritetw.github.io/letswrite-google-excel-db/"/>
+    <meta property="fb:app_id" content="911000986339138"/>
+    <meta property="og:type" content="website"/>
+    <meta property="og:site_name" content="H Game List"/>
+    <meta property="og:title" content="H Game List"/>
+    <meta itemprop="name" content="H Game List"/>
+    <meta name="description" content="本篇大綱：本篇會用到的資源：資料、樣式、原始檔。建立 Google Sheets、發佈 Google Sheets 到網路、建一個會員列表的頁面、從 Google Sheets 接資料。這一篇是如何把 Google Sheets 當作資料庫，並實作出一個簡單的會員列表頁出來。"/>
+    <meta property="og:description" content="本篇大綱：本篇會用到的資源：資料、樣式、原始檔。建立 Google Sheets、發佈 Google Sheets 到網路、建一個會員列表的頁面、從 Google Sheets 接資料。這一篇是如何把 Google Sheets 當作資料庫，並實作出一個簡單的會員列表頁出來。"/>
+    <meta itemprop="description" content="本篇大綱：本篇會用到的資源：資料、樣式、原始檔。建立 Google Sheets、發佈 Google Sheets 到網路、建一個會員列表的頁面、從 Google Sheets 接資料。這一篇是如何把 Google Sheets 當作資料庫，並實作出一個簡單的會員列表頁出來。"/>
+    <meta itemprop="image" content="https://letswritetw.github.io/letswrite-google-excel-db/fb.png"/>
+    <meta property="og:image" content="https://letswritetw.github.io/letswrite-google-excel-db/fb.png"/>
+    <meta property="og:image:width" content="1200"/>
+    <meta property="og:image:height" content="630"/>
+    <meta property="og:image:alt" content="如何用 Google Sheets / Excel 當作資料庫"/>
     <link rel="icon" href="./icon.png" type="image/png">
+    <link rel="stylesheet" href="dist/light-resived.css" media="screen"/>
+    <link rel="stylesheet" href="dist/style.min.css" media="screen"/>
+    
+
+    <!-- Google Tag Manager-->
+    <script>
+      (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+      new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+      j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+      'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+      })(window,document,'script','dataLayer','GTM-PGQ9WQT');
+    </script>
   </head>
   <body>
-    <main>
-        <h1>This Website is used to display My games</h1>
+    <!-- load private informate -->
+    <script src="src/secret-information.js"></script>
 
-        <h2>What do I have to offer</h2>
+    <!-- load event functions -->
+    <script src="src/event-function.js"></script>
 
-        <h3>1. Financial Benefits</h3>
+    <!-- Google Tag Manager (noscript)-->
+    <noscript>
+      <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PGQ9WQT" height="0" width="0" style="display:none;visibility:hidden"></iframe>
+    </noscript>
+    <div class="text-center">
+      <h1>H game 列表: 資源存在 Mega</h1>
+      <h6>
+        <script>
+          document.write('H game 列表: <a href="'+SheetAddress+'" target="_blank">Google Sheets</a>');
+        </script>        
+        &emsp;
+        常用遊戲來源：
+        <a href="https://www.south-plus.net/" target="_blank">South Plus</a>、
+        <a href="https://cangku.moe/category/6" target="_blank">紳士倉庫</a>、
+        <a href="https://www.acggw.club/" target="_blank">ACG港灣</a>、
+        <a href="https://hgamefree.info/" target="_blank">H Game分享平台</a>、
+        <a href="https://steamcommunity.com/workshop/browse/?appid=431960&searchtext=&childpublishedfileid=0&browsesort=trend&section=readytouseitems&requiredtags%5B%5D=Application&requiredtags%5B%5D=Mature&created_date_range_filter_start=0&created_date_range_filter_end=0&updated_date_range_filter_start=0&updated_date_range_filter_end=0" target="_blank">
+          Steam 小紅車
+        </a>
+        
+      </h6>
+    </div>
+    <hr/>
+    <section class="js-append-card"></section>
 
-        <h3>2. Society improves</h3>
+    
+    
+    <!-- Main Script -->
+    <script>
+      const TabID = '工作表1';
+      const uri = 'https://sheets.googleapis.com/v4/spreadsheets/'+SheetID+'/values/'+TabID+'?alt=json&key='+APIKey;
+      
+      fetch(uri)
+        .then(res => res.json())
+        .then(res => {
+          const data = res.values;
+          console.log(data);
+      
+          // 刪除前兩個陣列
+          data.shift();
+          data.shift();
 
-        <h4>a. Improving the tax system</h4>
-
-        <h4>b. Providing more refuse dumps</h4>
-
-        <h2>Who am I</h2>
-
-        <h2>Conclusion</h2>
-    </main>
-	<script src="index.js"></script>
+          var tag_array = extract_tags(data);          
+          display_games(data, tag_array); 
+        })
+    </script>
   </body>
 </html>
