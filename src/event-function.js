@@ -154,3 +154,46 @@ function get_unique_tags(tags_array){
     return uniqueTags;
 }
 
+function build_tag_dict(game_array){
+    var company_dict = {};
+    var tags_dict = {};
+    TagTargetInd = [CompanyInd, TagInd];
+    
+    index = 0;
+
+    // console.log(`game_array: ${game_array}`)
+    Array.prototype.forEach.call(game_array, (d) => {
+
+        // build tag dictionary
+        let com = d[CompanyInd];
+        if (company_dict.hasOwnProperty(com)){
+            company_dict[com].push(index);
+        }else{
+            company_dict[com] = [index];
+        }
+
+        // build tag dictionary
+        var Tags = [];
+        if (d.length >= TagInd+1) {
+            Tags = d[TagInd].split("、");
+            for (t of Tags){
+                if (t==' ') console.log(d[OriginalNameInd]);
+                if (tags_dict.hasOwnProperty(t)){
+                    tags_dict[t].push(index);
+                }else{
+                    tags_dict[t] = [index];
+                }
+            }
+        }
+        index++;
+    });
+    // console.log("extracted tags:");
+    // console.log(tags_array);
+    window.localStorage.setItem("company_dict", JSON.stringify(company_dict));
+    window.localStorage.setItem("tags_dict", JSON.stringify(tags_dict));
+
+}
+
+function get_tag_dict(dict_name){
+    return JSON.parse(window.localStorage.getItem(dict_name));
+}

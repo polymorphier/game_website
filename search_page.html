@@ -73,37 +73,23 @@
       </h6>
     </div>
     <hr/>
-    <section class="js-append-card"></section>
 
-    
-    
+
     <!-- Main Script -->
+    <section class="js-append-card"></section>
     <script>
-      const TabID = '工作表1';
-      const uri = 'https://sheets.googleapis.com/v4/spreadsheets/'+SheetID+'/values/'+TabID+'?alt=json&key='+APIKey;
-      
-      fetch(uri)
-        .then(res => res.json())
-        .then(res => {
-          const data = res.values;
-      
-          // 刪除前兩個陣列
-          data.shift();
-          data.shift();
 
-          tag_array = extract_tags(data);          
-          var inds = [];
-          for (var i=0; i<tag_array.length; i++){
-            for (t of tag_array[i]){
-              if (tag_target == t){
-                inds.push(i);
-                break;
-              }
-            }
-          }
-          // console.log(`inds: ${inds}`);
-          display_games(data, inds); 
-        })
+      var game_data = JSON.parse(localStorage.getItem("game_data"));
+      var company_dict = JSON.parse(localStorage.getItem("company_dict"));
+      var tags_dict = JSON.parse(localStorage.getItem("tags_dict"));
+      var inds = [];
+      if (company_dict.hasOwnProperty(tag_target)){inds = company_dict[tag_target];}
+      else if (tags_dict.hasOwnProperty(tag_target)){inds = tags_dict[tag_target];}
+
+      // console.log(`tag_target: ${tag_target}`)
+      // console.log(`inds: ${inds}`);
+      display_games(game_data, inds); 
+      
     </script>
   </body>
 </html>

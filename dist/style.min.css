@@ -6,6 +6,11 @@
     .js-append-card 
     .card{margin-bottom:3rem;margin-left:1rem;width:23%}
     .js-append-card 
-    .avatar img{display:block;margin-right:auto;margin-left:auto;}@media screen and (max-width: 480px){.js-append-card .card{width:100%}}
+    .avatar img{display:block;margin-right:auto;margin-left:auto;}@media screen and (max-width: 640px){.js-append-card .card{width:100%}}
     /* .avatar img{display: flex; justify-content: center; align-items: center;}@media screen and (max-width: 480px){.js-append-card .card{width:100%}} */
     .bolded { font-weight: bold; }
+
+
+
+
+    

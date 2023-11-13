@@ -23,6 +23,7 @@
     <link rel="icon" href="./icon.png" type="image/png">
     <link rel="stylesheet" href="dist/light-resived.css" media="screen"/>
     <link rel="stylesheet" href="dist/style.min.css" media="screen"/>
+    <link rel="stylesheet" href="dist/collapsible-botton.css" media="screen"/>
     
 
     <!-- Google Tag Manager-->
@@ -45,56 +46,109 @@
     <noscript>
       <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PGQ9WQT" height="0" width="0" style="display:none;visibility:hidden"></iframe>
     </noscript>
-    <div class="text-center">
-      <h1>H game 列表: 資源存在 Mega</h1>
-      <h6>
-        <script>
-          document.write('H game 列表: <a href="'+SheetAddress+'" target="_blank">Google Sheets</a>');
-        </script>        
-        &emsp;
-        常用遊戲來源：
-        <a href="https://www.south-plus.net/" target="_blank">South Plus</a>、
-        <a href="https://cangku.moe/category/6" target="_blank">紳士倉庫</a>、
-        <a href="https://www.acggw.club/" target="_blank">ACG港灣</a>、
-        <a href="https://hgamefree.info/" target="_blank">H Game分享平台</a>、
-        <a href="https://steamcommunity.com/workshop/browse/?appid=431960&searchtext=&childpublishedfileid=0&browsesort=trend&section=readytouseitems&requiredtags%5B%5D=Application&requiredtags%5B%5D=Mature&created_date_range_filter_start=0&created_date_range_filter_end=0&updated_date_range_filter_start=0&updated_date_range_filter_end=0" target="_blank">
-          Steam 小紅車
-        </a>
-        
-      </h6>
-    </div>
-    <hr/>
-    <section class="js-append-card"></section>
-    
-    
-    <!-- Main Script -->
+
+    <!-- Read and save game data from Google Sheets -->
     <script>
       const TabID = '工作表1';
       const uri = 'https://sheets.googleapis.com/v4/spreadsheets/'+SheetID+'/values/'+TabID+'?alt=json&key='+APIKey;
-      
       fetch(uri)
         .then(res => res.json())
         .then(res => {
-          const data = res.values;
-          // console.log(data);
+          var data = res.values;
       
           // 刪除前兩個陣列
           data.shift();
           data.shift();
-
-          var tags_array = extract_tags(data); 
-          let uniqueTags = get_unique_tags(tags_array);
-          
-          // ----------TO DO (Add all tags above)-------------
-          // document.write('H game 列表: <a href="'+SheetAddress+'" target="_blank">Google Sheets</a>');
-          // var TagString = "";
-          // Array.prototype.forEach.call(Tags, (t) => {
-          //   TagString += `<a href='javascript:void(0);' target='_blank'; onclick='return search_tags("${t}");'>${t}</a> `;
-          // });
-
-          const inds = Array.from(Array(data.length).keys());
-          display_games(data, inds); 
+          localStorage.setItem("game_data", JSON.stringify(data));
+          build_tag_dict(data);
+          // console.log(`data: ${data}`)
         })
+      
+      
+    </script>
+
+    <div class="text-center">
+      <h1>H game 列表: 資源存在 Mega</h1>
+      <h6>
+        <p>
+          <script>
+            document.write('H game 列表: <a href="'+SheetAddress+'" target="_blank">Google Sheets</a>');
+          </script>        
+          &emsp;
+          常用遊戲來源：
+          <a href="https://www.south-plus.net/" target="_blank">South Plus</a>、
+          <a href="https://cangku.moe/category/6" target="_blank">紳士倉庫</a>、
+          <a href="https://www.acggw.club/" target="_blank">ACG港灣</a>、
+          <a href="https://hgamefree.info/" target="_blank">H Game分享平台</a>、
+          <a href="https://steamcommunity.com/workshop/browse/?appid=431960&searchtext=&childpublishedfileid=0&browsesort=trend&section=readytouseitems&requiredtags%5B%5D=Application&requiredtags%5B%5D=Mature&created_date_range_filter_start=0&created_date_range_filter_end=0&updated_date_range_filter_start=0&updated_date_range_filter_end=0" target="_blank">
+            Steam 小紅車
+          </a>     
+        </p>
+        <!-- <p>開發商: 
+          <script>
+            var company_dict = JSON.parse(window.localStorage.getItem("company_dict"));
+            var str = ``;
+            for (com in company_dict){
+              str += `<a href='javascript:void(0);' target='_blank'; onclick='return search_tags("${com}");'>${com}</a> `;
+              // str += "123";
+            }
+            document.write(str);
+          </script>
+        </p> -->
+
+        
+      </h6>
+      
+    </div>
+
+    <p><h4>分類標籤:</h4></p>
+    <button type="button" class="collapsible">開發商</button>
+    <div class="collapsible-content">
+      <p>
+        <script>
+          var company_dict = JSON.parse(window.localStorage.getItem("company_dict"));
+          var str = `<ul id="cols">`;
+          for (com in company_dict){
+            str += `<li><a href='javascript:void(0);' target='_blank'; onclick='return search_tags("${com}");'>${com}</a></li>`;
+          }
+          str += `</ul>`;
+          document.write(str);
+        </script>
+      </p>
+    </div>
+
+    <button type="button" class="collapsible">Tags</button>
+    <div class="collapsible-content">
+      <p>
+        <script>
+          var tags_dict = JSON.parse(localStorage.getItem("tags_dict"));
+          var str = `<ul id="cols">`;
+          for (t in tags_dict){
+            str += `<li><a href='javascript:void(0);' target='_blank'; onclick='return search_tags("${t}");'>${t}</a></li>`;
+          }
+          str += `</ul>`;
+          document.write(str);
+        </script>
+      </p>
+    </div>
+    <script src="src/collapsible-botton.js"></script>
+
+    <hr/>
+
+
+    <section class="js-append-card"></section>
+    <!-- Display Game List -->
+    <script>
+      var game_data = JSON.parse(localStorage.getItem("game_data"));
+      
+      var tags_array = extract_tags(game_data); 
+      let uniqueTags = get_unique_tags(tags_array);
+      var company_dict = JSON.parse(window.localStorage.getItem("company_dict"));
+      var tags_dict = JSON.parse(window.localStorage.getItem("tags_dict"));
+
+      const inds = Array.from(Array(game_data.length).keys());
+      display_games(game_data, inds); 
+
     </script>
   </body>
 </html>
