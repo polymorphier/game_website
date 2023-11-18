@@ -48,11 +48,24 @@
     <noscript>
       <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PGQ9WQT" height="0" width="0" style="display:none;visibility:hidden"></iframe>
     </noscript>
+
+    <!-- Get Searched Targets -->
+    <script>
+      let tag_target = sessionStorage.getItem("tag_target");
+      var game_data = JSON.parse(localStorage.getItem("game_data"));
+      var company_dict = JSON.parse(localStorage.getItem("company_dict"));
+      var tags_dict = JSON.parse(localStorage.getItem("tags_dict"));
+      var inds = [];
+      if (company_dict.hasOwnProperty(tag_target)){inds = company_dict[tag_target];}
+      else if (tags_dict.hasOwnProperty(tag_target)){inds = tags_dict[tag_target];}
+
+    </script>
+
     <div class="text-center">
       <h1>
-        <script>
-          let tag_target = sessionStorage.getItem("tag_target");
-          let str = `<span  class="bolded" style="color: rgb(0, 100, 0)">${tag_target}</span>`;
+        <script>          
+          let num = inds.length;
+          let str = `<span  class="bolded" style="color: rgb(0, 100, 0)">${tag_target} (${num}款)</span>`;
           document.write('H game 列表: '+str);
         </script> 
       </h1>
@@ -79,13 +92,7 @@
     <section class="js-append-card"></section>
     <script>
 
-      var game_data = JSON.parse(localStorage.getItem("game_data"));
-      var company_dict = JSON.parse(localStorage.getItem("company_dict"));
-      var tags_dict = JSON.parse(localStorage.getItem("tags_dict"));
-      var inds = [];
-      if (company_dict.hasOwnProperty(tag_target)){inds = company_dict[tag_target];}
-      else if (tags_dict.hasOwnProperty(tag_target)){inds = tags_dict[tag_target];}
-
+      
       // console.log(`tag_target: ${tag_target}`)
       // console.log(`inds: ${inds}`);
       display_games(game_data, inds); 

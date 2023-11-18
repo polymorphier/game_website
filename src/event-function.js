@@ -6,7 +6,7 @@ const DownloadLinkInd = 4;
 const GameTypeInd = 6;
 const CompanyInd = 7;
 const TagInd = 8;
-const OtherInd = 9;
+const NoteInd = 9;
 
 
 function display_games(game_array, DisplayInds) {
@@ -38,9 +38,10 @@ function display_games(game_array, DisplayInds) {
         // var ImgLink = "https://drive.google.com/uc?export=view&id="+ImgID;
         var ImgLink = "imgs/" + d[OriginalNameInd] + ".jpg";
         // console.log(ImgLink);
+        var com = d[CompanyInd];
 
         var Tags = "";
-        if (d.length >= 9) {
+        if (d.length >= TagInd+1) {
             Tags = d[TagInd].split("、");
         }
 
@@ -49,11 +50,17 @@ function display_games(game_array, DisplayInds) {
             TagString += `<a href='javascript:void(0);' target='_blank'; onclick='return search_tags("${t}");'>${t}</a> `;
         });
 
-        index += 1;
+        // show note
+        var note = "";
+        if (d.length >= NoteInd+1) {
+            note = d[NoteInd];
+        }
 
+        
+        index += 1;
         let Card = `
         <div class="card">
-            <div class="avatar">
+            <div class="avatar" title="開發商: ${com}\n${note}">
                 <img src="${ImgLink}">
             </div>
             <div class="text-center">
@@ -63,6 +70,7 @@ function display_games(game_array, DisplayInds) {
                 <p> ${TagString} </p>                  
             </div>
         </div>`;
+
 
         document.querySelector(".js-append-card").insertAdjacentHTML("beforeend", Card);
     }
@@ -165,7 +173,7 @@ function build_tag_dict(game_array){
     Array.prototype.forEach.call(game_array, (d) => {
 
         // build tag dictionary
-        let com = d[CompanyInd];
+        let com = d[CompanyInd].trim();
         if (company_dict.hasOwnProperty(com)){
             company_dict[com].push(index);
         }else{
@@ -175,9 +183,12 @@ function build_tag_dict(game_array){
         // build tag dictionary
         var Tags = [];
         if (d.length >= TagInd+1) {
-            Tags = d[TagInd].split("、");
+            Tags = d[TagInd].trim().split("、");
             for (t of Tags){
-                if (t==' ') console.log(d[OriginalNameInd]);
+                if (t=='') {
+                    // console.log(d[OriginalNameInd]); 
+                    continue;
+                }
                 if (tags_dict.hasOwnProperty(t)){
                     tags_dict[t].push(index);
                 }else{

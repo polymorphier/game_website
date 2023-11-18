@@ -61,6 +61,9 @@
           data.shift();
           localStorage.setItem("game_data", JSON.stringify(data));
           build_tag_dict(data);
+          var company_dict = JSON.parse(window.localStorage.getItem("company_dict"));
+          var tags_dict = JSON.parse(localStorage.getItem("tags_dict"));
+
           // console.log(`data: ${data}`)
         })
       
@@ -71,10 +74,7 @@
       <h1>H game 列表: 資源存在 Mega</h1>
       <h6>
         <p>
-          <script>
-            document.write('H game 列表: <a href="'+SheetAddress+'" target="_blank">Google Sheets</a>');
-          </script>        
-          &emsp;
+          
           常用遊戲來源：
           <a href="https://www.south-plus.net/" target="_blank">South Plus</a>、
           <a href="https://cangku.moe/category/6" target="_blank">紳士倉庫</a>、
@@ -84,32 +84,41 @@
             Steam 小紅車
           </a>     
         </p>
-        <!-- <p>開發商: 
+        <p>
+          全CG存檔來源: 
+          <a href="https://2dfan.com/" target="_blank">2DFan</a>、
+          <a href="https://seiya-saiga.com/save.html" target="_blank">誠也の部屋</a>
+          &emsp;
           <script>
-            var company_dict = JSON.parse(window.localStorage.getItem("company_dict"));
-            var str = ``;
-            for (com in company_dict){
-              str += `<a href='javascript:void(0);' target='_blank'; onclick='return search_tags("${com}");'>${com}</a> `;
-              // str += "123";
-            }
-            document.write(str);
-          </script>
-        </p> -->
-
+            document.write('H game 列表: <a href="'+SheetAddress+'" target="_blank">Google Sheets</a>');
+          </script>        
+        </p>
         
       </h6>
       
     </div>
 
-    <p><h4>分類標籤:</h4></p>
-    <button type="button" class="collapsible">開發商</button>
+    <p><h4>
+      <script>
+        var game_data = JSON.parse(window.localStorage.getItem("game_data"));
+        document.write(`分類標籤 (遊戲總數: ${Object.keys(game_data).length}款):`);
+      </script> 
+    </h4></p>
+    <button type="button" class="collapsible">開發商: 
+      <script>
+        var company_dict = JSON.parse(window.localStorage.getItem("company_dict"));
+        document.write(`${Object.keys(company_dict).length}`);
+      </script>
+    </button>
     <div class="collapsible-content">
       <p>
         <script>
-          var company_dict = JSON.parse(window.localStorage.getItem("company_dict"));
           var str = `<ul id="cols">`;
-          for (com in company_dict){
-            str += `<li><a href='javascript:void(0);' target='_blank'; onclick='return search_tags("${com}");'>${com}</a></li>`;
+          var keys = Object.keys(company_dict);
+          keys.sort();
+          for (com of keys){
+            num = company_dict[com].length;
+            str += `<li><a href='javascript:void(0);' target='_blank'; onclick='return search_tags("${com}");'>${com} (${num})</a></li>`;
           }
           str += `</ul>`;
           document.write(str);
@@ -117,13 +126,19 @@
       </p>
     </div>
 
-    <button type="button" class="collapsible">Tags</button>
+    <button type="button" class="collapsible">Tags: 
+      <script>
+        var tags_dict = JSON.parse(window.localStorage.getItem("tags_dict"));
+        document.write(`${Object.keys(tags_dict).length}`);
+      </script>
+    </button>
     <div class="collapsible-content">
       <p>
         <script>
-          var tags_dict = JSON.parse(localStorage.getItem("tags_dict"));
           var str = `<ul id="cols">`;
-          for (t in tags_dict){
+          var keys = Object.keys(tags_dict);
+          keys.sort();
+          for (t of keys){
             str += `<li><a href='javascript:void(0);' target='_blank'; onclick='return search_tags("${t}");'>${t}</a></li>`;
           }
           str += `</ul>`;
